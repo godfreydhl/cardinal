@@ -21,6 +21,8 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  pdf_flutter:
+  video_player:
   flutter:
     sdk: flutter
 
@@ -65,8 +67,20 @@ flutter:
     - assets/images/travel4.jpg
     - assets/images/travel5.jpg
     - assets/images/logo.jpg
+    - assets/images/first_issue.jpeg
+    - assets/images/second_issue.jpeg
+    - assets/images/third_issue.jpeg
+    - assets/images/fourth_issue.jpeg
+    - assets/pdfs/fintech_notes.pdf
+    - assets/pdfs/leisure.pdf
+    - assets/pdfs/october.pdf
+    - assets/videos/first_issue.mp4
+    - assets/videos/second_issue.mp4
+    - assets/videos/third_issue.mp4
 
-  # An image asset can refer to one or more resolution-specific "variants", see
+
+
+    # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
   # For details regarding adding assets from package dependencies, see

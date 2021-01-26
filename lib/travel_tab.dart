@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'article-view.dart';
+import 'Article-model.dart';
+import 'Article-list-temp.dart';
 class TravelTab extends StatefulWidget {
 
   @override
@@ -10,7 +13,7 @@ class _TravelTabState extends State<TravelTab> {
   bool _isBookmarked = true;
 
 
-  Card _buildCard(String title, String imageSource){
+  Card _buildCard(Article article){
     return Card(
         elevation: 8,
         child: Container(
@@ -20,42 +23,50 @@ class _TravelTabState extends State<TravelTab> {
             children: [
               Expanded(
                   flex: 2,
-                  child: Container(
-
-                    width:365,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(imageSource),
-                            colorFilter:
-                            ColorFilter.mode(Colors.black.withOpacity(0.9999999),
-                                BlendMode.dstATop),
-                            fit: BoxFit.fill
-                        )
-                    ),
-                    child: Stack(
-                      children: [
-                        Opacity(
-                          child:Container(
-                            decoration: BoxDecoration(
-                                color: Colors.black
+                  child: InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (_){
+                        return ArticleView(article: article);
+                      })
+                      );
+                    },
+                    child: Container(
+                      width:365,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(article.image),
+                              colorFilter:
+                              ColorFilter.mode(Colors.black.withOpacity(0.9999999),
+                                  BlendMode.dstATop),
+                              fit: BoxFit.fill
+                          )
+                      ),
+                      child: Stack(
+                        children: [
+                          Opacity(
+                            child:Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.black
+                              ),
                             ),
+                            opacity: 0.7,
                           ),
-                          opacity: 0.7,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(title,
-                              style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.white,
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(article.title,
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  color: Colors.white,
 
 
-                              ),)
-                          ],
-                        ),
-                      ],
+                                ),)
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   )
               ),
@@ -92,20 +103,13 @@ class _TravelTabState extends State<TravelTab> {
   @override
   Widget build(BuildContext context) {
 
-    final List<String> titles =<String> ['Explore Egypt with a magnificent camel ride',
-      '10 things to do in Capetown for a fun getaway',
-      'What you may not know about Orlando Towers',
-      'Bungee Jumping in Victoria falls. The experience of a lifetime',
-      'Experience Swathi culture'];
-    final List<String> images = <String> ['assets/images/travel1.jpg','assets/images/travel2.jpg','assets/images/travel3.jpg', 'assets/images/travel4.jpg', 'assets/images/travel5.jpg'];
-
     return Scaffold(
         backgroundColor: Colors.grey[200],
         body: ListView.builder(
             padding:const EdgeInsets.all(8),
-            itemCount: titles.length,
+            itemCount: TravelArticlesList.length,
             itemBuilder: (BuildContext context, int index){
-              return _buildCard(titles[index], images[index]);
+              return _buildCard(TravelArticlesList[index]);
             }
         )
       // This trailing comma makes auto-formatting nicer for build methods.

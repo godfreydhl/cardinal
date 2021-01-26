@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
-import 'travel_tab.dart';
+import 'Store-view.dart';
+import 'search_view.dart';
 
 void main() {
   runApp(MyApp());
@@ -38,14 +39,10 @@ class _MyHomePageState extends State <MyHomePage>{
       'Index 1: Bookmarks',
       style: optionStyle,
     ),
-    Text(
-      'Index 2:Search',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 3:Store',
-      style: optionStyle,
-    ),
+
+    SearchView(),
+
+    Store()
   ];
 
   void _onItemTapped(int index){

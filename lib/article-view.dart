@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'Article-model.dart';
 
 
-class ArticlePage extends StatelessWidget{
+class ArticleView extends StatelessWidget{
 
-  ArticlePage({
+  ArticleView({
     this.article
   });
 
