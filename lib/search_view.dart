@@ -1,118 +1,122 @@
 import 'package:flutter/material.dart';
 import 'package:cardinal/Article-list-temp.dart';
 import 'package:cardinal/Article-model.dart';
+import 'article-view.dart';
+import 'main.dart';
+class SearchView extends StatefulWidget{
 
-class SearchView extends StatelessWidget{
+
+  @override
+  _SearchViewState createState() => _SearchViewState();
+}
+
+class _SearchViewState extends State<SearchView> {
+
+  @override
+  void initState() {
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => showSearch(context: context, delegate: DataSearch()));
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-              icon: Icon(Icons.search),
-              onPressed: (){
-                showSearch(context: context, delegate: DataSearch());
-              }
-          )
-        ],
       ),
     );
   }
-  
+
+
 }
 
-class DataSearch extends SearchDelegate<String>{
+class DataSearch extends SearchDelegate<String> {
   @override
   List<Widget> buildActions(BuildContext context) {
-    return[(
-    IconButton(
-      icon:Icon(Icons.clear),
-      onPressed: (){
-        query='';
-
-        },
-      )
-    )];
-
+    return [(
+        IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () {
+            query = '';
+          },
+        )
+    )
+    ];
   }
 
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
       icon: AnimatedIcon(
-        icon: AnimatedIcons.menu_arrow,
+        icon: AnimatedIcons.arrow_menu,
         progress: transitionAnimation,
+
       ),
       onPressed: (){
-        close(context, null);
 
       },
+
     );
 
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    RecentArticles.add(query);
+    if (!RecentArticles.contains(query)) {
+      RecentArticles.insert(0, query);
+    }
 
+    final results = TravelArticlesList
+        .where((element) => element.title.contains(query))
+        .toList();
+
+    return ListView.builder(itemBuilder: (context, index) =>
+        ListTile(
+          title: Text(results[index].title),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(
+                builder: (_) {
+                  return ArticleView(article: results[index]);
+                })
+            );
+          },
+          leading: Icon(Icons.article),
+        ),
+      itemCount: results.length,
+    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    Suggestions(query: query);
-
-  }
-  
-}
-
-class Suggestions extends StatefulWidget{
-
-  final query;
-
-  Suggestions({this.query});
-
-  @override
-  SuggestionsState createState() => SuggestionsState();
-}
-
-class SuggestionsState extends State<Suggestions>{
-  @override
-  Widget build(BuildContext context) {
-    final suggestionList= widget.query.isEmpty
-        ? RecentArticles
-        :TravelArticlesList.map((e) => e.title).toList().where((element) => element.contains(widget.query)).toList();
-
-
     final suggestions = TravelArticlesList
         .map((e) => e.title)
         .toList()
-        .where((element) => element.contains(widget.query))
+        .where((element) => element.contains(query))
         .toList();
 
+    final suggestionList = query.isEmpty
+        ? RecentArticles
+        : suggestions;
     return ListView.builder(
-      itemBuilder: (context, index)=>ListTile(
-        onTap: (){
-        },
+        itemBuilder: (context, index) =>
+            ListTile(
+              onTap: () {
+                query = suggestionList[index];
 
-        leading: Icon(Icons.search),
-        title: Text( suggestionList[index]
-        ),
-        trailing: IconButton(
-          icon: Icon(Icons.highlight_remove),
-          onPressed: (){
-            setState(() {
-              RecentArticles.remove(widget.query);
-              print("removed");
+                if (!RecentArticles.contains(query)) {
+                  RecentArticles.insert(0, query);
+                }
 
-            });
+                showResults(context);
+              },
 
-
-          },
-        ),
-      ),
-      itemCount: suggestionList.length,
+              leading: query.isEmpty
+                  ? Icon(Icons.history)
+                  : Icon(Icons.search),
+              title: Text(suggestionList[index]
+              ),
+            ),
+        itemCount: suggestionList.length
     );
-
   }
-
 }

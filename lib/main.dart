@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'home.dart';
 import 'Store-view.dart';
 import 'search_view.dart';
+import 'package:cardinal/Bookmarks-view.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,16 +33,11 @@ class MyHomePage extends StatefulWidget{
 class _MyHomePageState extends State <MyHomePage>{
   int _selectedIndex =0;
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
   static  List<Widget> _widgetOptions = <Widget>[
     TabbedPage(),
-
-    Text(
-      'Index 1: Bookmarks',
-      style: optionStyle,
-    ),
-
+    Bookmarks(),
     SearchView(),
-
     Store()
   ];
 
@@ -50,6 +46,8 @@ class _MyHomePageState extends State <MyHomePage>{
       _selectedIndex = index;
     });
   }
+
+  void get onItemtapped => _onItemTapped;
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Article-model.dart';
+import 'BookmarkIcon.dart';
 
 
 class ArticleView extends StatelessWidget{
@@ -30,14 +31,8 @@ class ArticleView extends StatelessWidget{
                debugPrint('share');
              },
            ),
-           IconButton(
-             icon: Icon(Icons.bookmark_border),
-             color: Colors.white,
+           BookmarkIcon(article, Colors.white),
 
-             onPressed:(){
-               debugPrint('bookmark');
-             },
-           ),
          ],
       ),
       body: Container(

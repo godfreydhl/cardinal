@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'article-view.dart';
 import 'Article-model.dart';
 import 'Article-list-temp.dart';
+import 'BookmarkIcon.dart';
+
+
 class TravelTab extends StatefulWidget {
 
   @override
@@ -10,9 +13,6 @@ class TravelTab extends StatefulWidget {
 
 class _TravelTabState extends State<TravelTab> {
   get title => null;
-  bool _isBookmarked = true;
-
-
   Card _buildCard(Article article){
     return Card(
         elevation: 8,
@@ -81,14 +81,7 @@ class _TravelTabState extends State<TravelTab> {
                       debugPrint('share');
                     },
                   ),
-                  IconButton(
-                    icon: Icon(Icons.bookmark_border),
-                    color: Colors.black,
-
-                    onPressed:(){
-                      debugPrint('share');
-                    },
-                  ),
+                  BookmarkIcon(article, Colors.black)
 
                 ],
               )
