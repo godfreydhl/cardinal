@@ -21,8 +21,10 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  flutter_launcher_icons: ^0.8.0
   pdf_flutter:
   video_player:
+  date_format: ^1.0.9
   flutter:
     sdk: flutter
 
@@ -34,6 +36,13 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/heading.png"
+  adaptive_icon_background: #000000
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -67,6 +76,9 @@ flutter:
     - assets/images/travel4.jpg
     - assets/images/travel5.jpg
     - assets/images/logo.jpg
+    - assets/images/issue1Thumbnail.png
+    - assets/images/issue2Thumbnail.png
+    - assets/images/issue3Thumbnail.png
     - assets/images/first_issue.jpeg
     - assets/images/second_issue.jpeg
     - assets/images/third_issue.jpeg
@@ -77,6 +89,7 @@ flutter:
     - assets/videos/first_issue.mp4
     - assets/videos/second_issue.mp4
     - assets/videos/third_issue.mp4
+
 
 
 
@@ -92,10 +105,19 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Montserrsat
+    - family: Montserrat
       fonts:
         - asset: assets/fonts/Montserrat-Medium.ttf
           weight: 500
+        - asset: assets/fonts/Montserrat-Bold.ttf
+          weight: 700
+
+    - family: MontserratAlternates
+      fonts:
+        - asset: assets/fonts/MontserratALternates-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/MontserratAlternates-ExtraBold.ttf
+          weight: 800
   #
   #   - family: Trajan Pro
   #     fonts:

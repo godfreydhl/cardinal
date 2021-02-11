@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cardinal/Article-list-temp.dart';
-import 'package:cardinal/Article-model.dart';
 import 'article-view.dart';
-import 'main.dart';
 class SearchView extends StatefulWidget{
 
 
@@ -13,21 +11,12 @@ class SearchView extends StatefulWidget{
 class _SearchViewState extends State<SearchView> {
 
   @override
-  void initState() {
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => showSearch(context: context, delegate: DataSearch()));
-
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
       ),
     );
   }
-
-
 }
 
 class DataSearch extends SearchDelegate<String> {
@@ -43,23 +32,22 @@ class DataSearch extends SearchDelegate<String> {
     )
     ];
   }
-
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
       icon: AnimatedIcon(
-        icon: AnimatedIcons.arrow_menu,
+        icon: AnimatedIcons.menu_arrow,
         progress: transitionAnimation,
 
       ),
       onPressed: (){
+        close(context, null);
 
       },
 
     );
 
   }
-
   @override
   Widget buildResults(BuildContext context) {
     if (!RecentArticles.contains(query)) {

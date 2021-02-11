@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'issue-list-temp.dart';
 import 'issue-model.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
@@ -48,6 +47,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
         leading: IconButton(
           icon:Icon(Icons.arrow_back_ios),
@@ -59,10 +59,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       // Use a FutureBuilder to display a loading spinner while waiting for the
       // VideoPlayerController to finish initializing.
       body: _controller.value.initialized?
-            AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              // Use the VideoPlayer widget to display the video.
-              child: VideoPlayer(_controller),
+            Center(
+              child: AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                // Use the VideoPlayer widget to display the video.
+                child: VideoPlayer(_controller),
+              ),
             ):
              Center(child: CircularProgressIndicator()),
 

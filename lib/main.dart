@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'Store-view.dart';
-import 'search_view.dart';
 import 'package:cardinal/Bookmarks-view.dart';
+import 'login-view.dart';
+import 'profile_view.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,10 +17,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.black,
         accentColor: Colors.black,
-
-
       ),
-      home: MyHomePage(),
+      home: Login(),
     );
   }
 }
@@ -37,8 +36,8 @@ class _MyHomePageState extends State <MyHomePage>{
   static  List<Widget> _widgetOptions = <Widget>[
     TabbedPage(),
     Bookmarks(),
-    SearchView(),
-    Store()
+    Store(),
+    Profile(),
   ];
 
   void _onItemTapped(int index){
@@ -58,7 +57,7 @@ class _MyHomePageState extends State <MyHomePage>{
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem> [
           BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
+              icon:Icon(Icons.home_outlined),
               label:'Home'
           ),
           BottomNavigationBarItem(
@@ -67,12 +66,12 @@ class _MyHomePageState extends State <MyHomePage>{
               label: 'Bookmarked'
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label:'Search'
+              icon: Icon(Icons.store_outlined),
+              label:'Store'
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.store_outlined),
-              label: 'Store'
+              icon: Icon(Icons.person_outlined),
+              label: 'Account'
           ),
 
         ],

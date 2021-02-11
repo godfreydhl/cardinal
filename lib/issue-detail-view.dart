@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'pdf-view.dart';
 import 'preview-video-view.dart';
-
-import 'issue-list-temp.dart';
 import 'issue-model.dart';
 
 class IssueDetail extends StatelessWidget{
@@ -34,7 +32,7 @@ class IssueDetail extends StatelessWidget{
             width: 200,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(issue.image),
+                image: AssetImage(issue.thumbnail),
                 fit: BoxFit.fill
               )
             ),
@@ -63,8 +61,9 @@ class IssueDetail extends StatelessWidget{
                     width: 120,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image:AssetImage(issue.image)
-                      )
+                        image:AssetImage(issue.image),
+                        fit: BoxFit.fill
+                      ),
                     ),
                   ),
                 ),
@@ -84,7 +83,7 @@ class IssueDetail extends StatelessWidget{
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.only(left:16, bottom: 16),
+                        padding: const EdgeInsets.only(left:16, bottom: 8),
                         child: Text(issue.date,
                           style: TextStyle(
                             fontSize: 20,
@@ -92,9 +91,20 @@ class IssueDetail extends StatelessWidget{
                           ),
                         ),
                       ),
+                      Container(
+                        padding: const EdgeInsets.only(left:16, bottom: 8),
+                        child: Text(issue.price,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Colors.green
+                          ),
+                        ),
+                      ),
+
 
                       Container(
-                        padding: const EdgeInsets.only(left:16, top: 24),
+                        padding: const EdgeInsets.only(left:16, top: 8),
                         child: ElevatedButton(
                             onPressed: () {Navigator.push(context, MaterialPageRoute(
                                 builder: (_){
@@ -103,7 +113,7 @@ class IssueDetail extends StatelessWidget{
                               );
                             },
                             child: Text(
-                              'BUY - ${issue.price}',
+                              '  BUY NOW  ',
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,

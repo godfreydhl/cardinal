@@ -1,5 +1,4 @@
 import 'Article-model.dart';
-import 'Article-list-temp.dart';
 import 'package:flutter/material.dart';
 
 class BookmarkIcon extends StatefulWidget{
@@ -27,6 +26,7 @@ class _BookmarkIconState extends State<BookmarkIcon>{
           }
           else{
             widget.article.isBookmarked = true;
+            widget.article.dateBookmarked = DateTime.now();
           }
         });
         debugPrint('share, ${widget.article.title}, ${widget.article.isBookmarked}');

@@ -12,6 +12,15 @@ class Article{
   final String content;
   final String image;
 
+
+  DateTime _dateBookmarked= DateTime.now();
+
+  DateTime get dateBookmarked => _dateBookmarked;
+
+  set dateBookmarked(DateTime value){
+    _dateBookmarked = value;
+  }
+
   bool _isBookmarked = false;
 
   bool get isBookmarked => _isBookmarked;

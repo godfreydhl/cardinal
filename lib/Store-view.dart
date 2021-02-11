@@ -51,7 +51,7 @@ class _StoreState extends State<Store>{
                 child: Text(
                     issue.price,
                     style: TextStyle(
-                        color:Colors.grey[500]
+                        color:Colors.green
                     )
                 ),
               ),
@@ -65,6 +65,13 @@ class _StoreState extends State<Store>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Container(
+          padding: const EdgeInsets.only(left:95),
+          child: Text(
+              'Store'
+          ),
+        ),
+
 
       ),
       body: Container(

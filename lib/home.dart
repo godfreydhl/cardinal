@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'home.dart';
 import 'leisure_tab.dart';
 import 'travel_tab.dart';
+import 'search_view.dart';
 
 
 import 'lifestyle_tab.dart';
@@ -15,7 +15,6 @@ class TabbedPage extends StatefulWidget {
 }
 
 class _TabbedPageState extends State<TabbedPage> with SingleTickerProviderStateMixin {
-  int _counter = 0;
 
   final List<Tab> myTabs = <Tab>[
     Tab(text: 'Travel'),
@@ -43,7 +42,16 @@ class _TabbedPageState extends State<TabbedPage> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Center(child: Image.asset('assets/images/logo.jpg',  fit: BoxFit.cover,)),
+          title: Center(
+            child: Image.asset('assets/images/logo.jpg'),
+          ),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.search),
+                onPressed: (){
+                  showSearch(context: context, delegate: DataSearch());
+                })
+          ],
           bottom: TabBar(
             controller: _tabController,
             tabs: myTabs,
