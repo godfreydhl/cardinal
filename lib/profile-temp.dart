@@ -9,24 +9,24 @@ class Profile{
     this.password
   });
 
-  final String first;
-  final String last;
-  final String email;
-  final String password;
+  String first;
+  String last;
+  String email;
+  String password;
 
 
-  set first (String value){
+  set firstName (String value){
     first = value;
   }
 
-  set second (String value){
-    second = value;
+  set lastName (String value){
+    last = value;
   }
 
-  set email (String value){
+  set newEmail (String value){
     email = value;
   }
-  set password (String value){
+  set newPassword (String value){
     password = value;
   }
 
