@@ -4,22 +4,44 @@ import 'Store-view.dart';
 import 'package:cardinal/Bookmarks-view.dart';
 import 'login-view.dart';
 import 'profile_view.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primaryColor: Colors.black,
-        accentColor: Colors.black,
-      ),
-      home: Login(),
+    return FutureBuilder(
+      // Initialize FlutterFire:
+      future: _initialization,
+      builder: (context, snapshot) {
+        // Check for errors
+        if (snapshot.hasError) {
+          return somethingWentWrong();
+        }
+
+        // Once complete, show your application
+        if (snapshot.connectionState == ConnectionState.done) {
+          return MaterialApp(
+            theme: ThemeData(
+              primaryColor: Colors.black,
+              accentColor: Colors.black,
+            ),
+            home: Login(),
+          );
+        }
+
+        // Otherwise, show something whilst waiting for initialization to complete
+        return Center(child: CircularProgressIndicator());
+      },
     );
+
   }
 }
 
@@ -85,4 +107,17 @@ class _MyHomePageState extends State <MyHomePage>{
 
     );
   }
+}
+
+class somethingWentWrong extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: Text('Something went wrong dude'),
+      ),
+    );
+  }
+
 }
