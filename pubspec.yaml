@@ -26,8 +26,6 @@ dependencies:
   video_player:
   date_format: ^1.0.9
   firebase_core: ^0.7.0
-  cloud_firestore: ^0.16.0
-  firebase_auth: ^0.20.0
 
 
   flutter:

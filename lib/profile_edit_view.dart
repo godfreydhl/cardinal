@@ -148,7 +148,7 @@ class _ProfileEditState extends State<ProfileEdit> {
               else if(widget.title=='Email'){
                 widget.User.newEmail = myController.text;
                 _showEmailDialog(myController.text);
-                Navigator.of(context).pop();
+
 
               }
               else if(widget.title=='Password'){

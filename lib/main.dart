@@ -23,7 +23,14 @@ class MyApp extends StatelessWidget {
       builder: (context, snapshot) {
         // Check for errors
         if (snapshot.hasError) {
-          return somethingWentWrong();
+          print(snapshot.error);
+          return MaterialApp(
+              theme: ThemeData(
+                primaryColor: Colors.black,
+                accentColor: Colors.black,
+              ),
+              home: somethingWentWrong()
+          );
         }
 
         // Once complete, show your application

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1096302966112",
+    "project_id": "cardinal-ad9d4",
+    "storage_bucket": "cardinal-ad9d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1096302966112:android:da4a731c7f58ce822d1a05",
+        "android_client_info": {
+          "package_name": "com.reylan.cardinal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1096302966112-h2u0qb16l7do5s8qngipflls8rn6fk2l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWFLSRip0ibK2yNyV_uGGOpqHZiU9rAhg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1096302966112-h2u0qb16l7do5s8qngipflls8rn6fk2l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1096302966112-jqrgsos027opfn96kdqbd89857rr9lhl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cardinalIteration1"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
