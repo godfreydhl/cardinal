@@ -5,7 +5,7 @@ import 'package:video_player/video_player.dart';
 import 'issue-model.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
-  VideoPlayerScreen({this.issue });
+  VideoPlayerScreen({required this.issue });
 
   Issue issue;
 
@@ -14,8 +14,8 @@ class VideoPlayerScreen extends StatefulWidget {
 }
 
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
-  VideoPlayerController _controller;
-  Future<void> _initializeVideoPlayerFuture;
+  late VideoPlayerController _controller;
+  late Future<void> _initializeVideoPlayerFuture;
 
 
 
@@ -58,15 +58,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       ),
       // Use a FutureBuilder to display a loading spinner while waiting for the
       // VideoPlayerController to finish initializing.
-      body: _controller.value.initialized?
+      body:
             Center(
               child: AspectRatio(
                 aspectRatio: _controller.value.aspectRatio,
                 // Use the VideoPlayer widget to display the video.
                 child: VideoPlayer(_controller),
               ),
-            ):
-             Center(child: CircularProgressIndicator()),
+            ),
 
         floatingActionButton: FloatingActionButton(
         onPressed: () {

@@ -3,9 +3,9 @@
 class Article{
 
   Article({
-    this.title,
-    this.image,
-    this.content
+    required this.title,
+    required this.image,
+    required this.content
   });
 
   final String title;

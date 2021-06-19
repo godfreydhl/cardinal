@@ -1,15 +1,57 @@
+import 'package:cardinal/article-view.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
+import 'Article.dart';
+import 'BookmarkIcon.dart';
+
 class LifestyleTab extends StatefulWidget {
+
 
   @override
   _LifestyleTabState createState() => _LifestyleTabState();
 }
 
+
 class _LifestyleTabState extends State<LifestyleTab> {
-  get title => null;
+
+  Widget _buildBody(BuildContext context){
+    return StreamBuilder <QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('Lifestyle_Articles').snapshots(),
+      builder: (context, snapshot){
+
+        if (snapshot.hasError) {
+          return Center(
+              child: Text('Something went wrong')
+          );
+        }
+
+        if(!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        return _buildList(context, snapshot.data!.docs);
+      },
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot){
+    return ListView(
+      padding: const EdgeInsets.only(top:20.0),
+      children: snapshot.map((data) => _buildCard(context, data)).toList(),
+    );
+  }
 
 
-  Card _buildCard(String title, String imageSource){
+  Widget _buildCard(BuildContext context, DocumentSnapshot data){
+    final article = Article.fromSnapshot(data);
+
+    Future<String> _url =  firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child(article.image)
+        .getDownloadURL();
     return Card(
         elevation: 8,
         child: Container(
@@ -19,40 +61,61 @@ class _LifestyleTabState extends State<LifestyleTab> {
             children: [
               Expanded(
                   flex: 2,
-                  child: Container(
-                    width:365,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            colorFilter:
-                            ColorFilter.mode(Colors.black.withOpacity(0.9999999),
-                                BlendMode.dstATop),
-                            image: AssetImage(imageSource),
-                            fit: BoxFit.fill
-                        )
-                    ),
-                    child: Stack(
-                      children: [
-                        Opacity(
-                          child:Container(
-                            decoration: BoxDecoration(
-                                color: Colors.black
-                            ),
-                          ),
-                          opacity: 0.7,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(title,
-                              style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.white,
+                  child: InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (_){
+                            return(ArticleView(article: article));
+                          })
+                      );
+                    },
+                    child: FutureBuilder<String>(
+                        future: _url,
+                        builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+                          if(snapshot.hasData){
+                            return Container(
+                              width:365,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: NetworkImage(snapshot.data.toString()),
+                                    fit: BoxFit.fill,
+                                    colorFilter:
+                                    ColorFilter.mode(Colors.black.withOpacity(0.999999),
+                                        BlendMode.dstATop),
+                                  )
+                              ),
+                              child: Stack(
+                                children:[
+                                  Opacity(
+                                    child: Container(
+                                        decoration:BoxDecoration(
+                                            color: Colors.black
+                                        )
+                                    ),
+                                    opacity: 0.7,
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(article.title,
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          color: Colors.white,
 
-                              ),)
-                          ],
-                        ),
-                      ],
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                            );
+                          }
+                          else if(snapshot.hasError){
+                            return Icon(Icons.error_outline);
+                          }
+                          else return Center(child: CircularProgressIndicator(strokeWidth: 0.3));
+
+                        }
                     ),
                   )
               ),
@@ -61,20 +124,12 @@ class _LifestyleTabState extends State<LifestyleTab> {
                 children:<Widget> [
                   IconButton(
                     icon: Icon(Icons.share),
-                    color: Colors.black,
 
                     onPressed:(){
                       debugPrint('share');
                     },
                   ),
-                  IconButton(
-                    icon: Icon(Icons.bookmark_border),
-                    color: Colors.black,
-
-                    onPressed:(){
-                      debugPrint('share');
-                    },
-                  ),
+                  BookmarkIcon(article: article)
 
                 ],
               )
@@ -88,23 +143,9 @@ class _LifestyleTabState extends State<LifestyleTab> {
 
   @override
   Widget build(BuildContext context) {
-
-    final List<String> titles =<String> ['Chef Dzulani and his fillet mignon with a twist',
-      'Bad hair day? get the best hairstyling tips right here',
-      'What\'s\ hot this season?',
-      'Sculpt that V-Shaped body with these at home workouts',
-      'Everything you need to know about taking care of your nails'];
-    final List<String> images = <String> ['assets/images/food1.jpg','assets/images/model2.jpg','assets/images/fashion1.jpg', 'assets/images/model4.jpg', 'assets/images/nails.jpg'];
-
     return Scaffold(
         backgroundColor: Colors.grey[200],
-        body: ListView.builder(
-            padding:const EdgeInsets.all(8),
-            itemCount: titles.length,
-            itemBuilder: (BuildContext context, int index){
-              return _buildCard(titles[index], images[index]);
-            }
-        )
+        body: _buildBody(context)
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

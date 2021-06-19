@@ -24,7 +24,7 @@ class _TabbedPageState extends State<TabbedPage> with SingleTickerProviderStateM
 
   ];
 
-  TabController _tabController;
+  late TabController _tabController;
 
   @override
   void initState() {

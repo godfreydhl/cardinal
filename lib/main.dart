@@ -1,14 +1,19 @@
+
 import 'package:flutter/material.dart';
-import 'home.dart';
-import 'Store-view.dart';
-import 'package:cardinal/Bookmarks-view.dart';
-import 'login-view.dart';
-import 'profile_view.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'authentication.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => ApplicationState(),
+    builder: (context, _)=>MyApp(),
+  ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -40,7 +45,7 @@ class MyApp extends StatelessWidget {
               primaryColor: Colors.black,
               accentColor: Colors.black,
             ),
-            home: Login(),
+            home: MainController()
           );
         }
 
@@ -52,71 +57,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget{
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-
-}
-class _MyHomePageState extends State <MyHomePage>{
-  int _selectedIndex =0;
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
-  static  List<Widget> _widgetOptions = <Widget>[
-    TabbedPage(),
-    Bookmarks(),
-    Store(),
-    Profile(),
-  ];
-
-  void _onItemTapped(int index){
-    setState((){
-      _selectedIndex = index;
-    });
-  }
-
-  void get onItemtapped => _onItemTapped;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-          child:_widgetOptions.elementAt(_selectedIndex)
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem> [
-          BottomNavigationBarItem(
-              icon:Icon(Icons.home_outlined),
-              label:'Home'
-          ),
-          BottomNavigationBarItem(
-
-              icon: Icon(Icons.bookmark_border),
-              label: 'Bookmarked'
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.store_outlined),
-              label:'Store'
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outlined),
-              label: 'Account'
-          ),
-
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-        showSelectedLabels: false,
-
-      ),
-
-    );
-  }
-}
-
-class somethingWentWrong extends StatelessWidget{
+class somethingWentWrong extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,6 +66,122 @@ class somethingWentWrong extends StatelessWidget{
         child: Text('Something went wrong dude'),
       ),
     );
+  }
+
+}
+
+class MainController extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Consumer<ApplicationState>(
+        builder: (context, appState, _) => Authentication(
+          email: appState.email,
+          loginState: appState.loginState,
+          startLoginFlow: appState.startLoginFlow,
+          verifyEmail: appState.verifyEmail,
+          signInWithEmailAndPassword: appState.signInWithEmailAndPassword,
+          cancelRegistration: appState.cancelRegistration,
+          registerAccount: appState.registerAccount,
+          signOut: appState.signOut,
+          startRegistration: appState.startRegistration,
+
+        ),
+      ),
+    );
+  }
+
+}
+
+class ApplicationState extends ChangeNotifier {
+
+  int _attendees = 0;
+  int get attendees => _attendees;
+
+  ApplicationState() {
+    init();
+  }
+
+  Future<void> init() async {
+    await Firebase.initializeApp();
+
+    FirebaseAuth.instance.userChanges().listen((user) {
+      if (user != null) {
+        _loginState = ApplicationLoginState.loggedIn;
+        notifyListeners();
+
+      } else {
+        _loginState = ApplicationLoginState.loggedOut;
+      }
+      notifyListeners();
+    });
+  }
+  ApplicationLoginState _loginState = ApplicationLoginState.loggedOut;
+  ApplicationLoginState get loginState =>_loginState;
+
+  String? _email;
+  String? get email => _email;
+
+  void startLoginFlow(){
+    _loginState = ApplicationLoginState.loggedOut;
+    notifyListeners();
+  }
+
+  void verifyEmail(
+      String email,
+      void Function(FirebaseAuthException e) errorCallback,
+      ) async {
+    try {
+      var methods =
+      await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+      if (methods.contains('password')) {
+        _loginState = ApplicationLoginState.loggedOut;
+      } else {
+        _loginState = ApplicationLoginState.register;
+      }
+      _email = email;
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+    }
+  }
+
+  void signInWithEmailAndPassword(
+      String email,
+      String password,
+      void Function(FirebaseAuthException e) errorCallback) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+    }
+  }
+
+
+  void cancelRegistration(){
+    _loginState = ApplicationLoginState.register;
+    notifyListeners();
+  }
+  void startRegistration(){
+    _loginState = ApplicationLoginState.register;
+    notifyListeners();
+  }
+  void registerAccount(String displayName, String email,  String password,
+      void Function(FirebaseAuthException e) errorCallback) async{
+    try{
+      var credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      await credential.user!.updateProfile( displayName: displayName);
+    } on FirebaseAuthException catch (e){
+      errorCallback(e);
+    }
+  }
+
+  void signOut(){
+    FirebaseAuth.instance.signOut();
   }
 
 }

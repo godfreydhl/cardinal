@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'profile-temp.dart';
-import 'login-view.dart';
-import 'profile_edit_view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class Profile extends StatefulWidget {
-  @override
-  _ProfileState createState() => _ProfileState();
-}
-
-class _ProfileState extends State<Profile> {
-
+class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+    User user = FirebaseAuth.instance.currentUser!;
 
     return Scaffold(
       appBar: AppBar(
@@ -22,147 +16,168 @@ class _ProfileState extends State<Profile> {
               'Profile'
           ),
         ),
-
       ),
-      resizeToAvoidBottomInset: false,
-      body:Column(
-            children: <Widget>[
-              Expanded(
-                  flex: 1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end:Alignment.bottomCenter,
-                        colors:[Colors.black, Colors.grey]
-                      )
-                    ),
-                    width: double.infinity,
-                     child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: AssetImage('assets/images/model.jpg'),
-                              radius: 50,
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Text(
-                                '${User.first} ${User.last}',
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.white
-                                )
-                              ),
-                            ),
+      body: Column(
 
-
-                          ],
-                        )
+          children: [
+            Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(left:16, top:16),
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      user.email!,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Colors.grey[700],
                       ),
                     ),
                   ),
-              Expanded(
-                flex: 2,
-                child: Column(
-                  children:[
-                    Expanded(
-                      flex:4,
-                      child: ListView(
-                      padding: const EdgeInsets.all(8),
-                      children: <Widget>[
-                        ListTile(
-                          title: Text('First Name',
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.black
-                                )
-                          ),
-                          subtitle: Text('${User.first}') ,
-                          trailing: IconButton(
-                             icon: Icon(Icons.edit),
-                              onPressed: (){
-                                Navigator.push(context, MaterialPageRoute(
-                                    builder: (_){
-                                      return ProfileEdit(User: User,title: 'First Name');
-                                    })
-                                );
-                            },
-                          )
-                        ),
-                        ListTile(
-                            title: Text('Last Name',
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.black
-                                )
-                            ),
-                            subtitle: Text('${User.last}') ,
-                            trailing: IconButton(
-                              icon: Icon(Icons.edit),
-                              onPressed: (){
-                                Navigator.push(context, MaterialPageRoute(
-                                    builder: (_){
-                                      return ProfileEdit(User: User,title: 'Last Name');
-                                    })
-                                );
-                              },
+                  Container(
+                    padding: EdgeInsets.only(bottom: 16, left:16),
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                        user.displayName!,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 40,
+                            color: Colors.black)
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    child: OutlinedButton(
+                      onPressed: null,
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0)
                             )
                         ),
-
-                        ListTile(
-                            title: Text('Email',
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.black
-                                )
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Text(
+                                  'Subscibe and get the latest issues first',
+                                  style:TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 20,
+                                      color: Colors.black
+                                  )
+                              ),
                             ),
-                            subtitle: Text('${User.email}') ,
-                            trailing: IconButton(
-                              icon: Icon(Icons.edit),
-                              onPressed: (){
-                                Navigator.push(context, MaterialPageRoute(
-                                    builder: (_){
-                                      return ProfileEdit(User: User,title: 'Email');
-                                    })
-                                );
-                              },
+                            Expanded(
+                              flex:2,
+                              child: Icon(
+                                Icons.menu_book,
+                                size: 70,
+                                color: Colors.red[700],
+                              ),
                             )
+                          ],
                         ),
-                        ListTile(
-                            title: Text('Password',
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.black
-                                )
-                            ),
-                            subtitle: Text('•••••'),
-                            trailing: IconButton(
-                              icon: Icon(Icons.edit),
-                              onPressed: (){
-                                Navigator.push(context, MaterialPageRoute(
-                                    builder: (_){
-                                      return ProfileEdit(User: User,title: 'Password');
-                                    })
-                                );
-                              },
-                            )
-                        ),
-                      ]
                       ),
                     ),
-                    Expanded(
-                      flex:1,
-                      child: Container(
+                  ),
+
+                ]
+            ),
+            Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ListTile(
+                            title: Text(
+                              'Account',
+                              style:TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Colors.black
+                              ),
+                            ),
+                            trailing: IconButton(
+                              icon:Icon(
+                                Icons.arrow_forward_ios,
+                                size: 13,
+                              ),
+                              onPressed: (){
+
+                              },
+                            ),
+                          ),
+                          ListTile(
+                            title: Text(
+                              'About Us',
+                              style:TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black
+                              ),
+                            ),
+                            trailing: IconButton(
+                              icon:Icon(
+                                Icons.arrow_forward_ios,
+                                size: 13,
+                              ),
+                              onPressed: (){
+
+                              },
+                            ),
+                          ),
+                          ListTile(
+                            title: Text(
+                              'Privacy Policy',
+                              style:TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black
+                              ),
+                            ),
+                            trailing: IconButton(
+                              icon:Icon(
+                                Icons.arrow_forward_ios,
+                                size: 13,
+                              ),
+                              onPressed: (){
+
+                              },
+                            ),
+                          ),
+                          ListTile(
+                            title: Text(
+                              'Terms and Conditions',
+                              style:TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black
+                              ),
+                            ),
+                            trailing: IconButton(
+                              icon:Icon(
+                                Icons.arrow_forward_ios,
+                                size: 13,
+                              ),
+                              onPressed: (){
+
+                              },
+                            ),
+                          ),
+                        ]
+                    ),
+                  ),
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: Container(
                         padding: const EdgeInsets.only(left:16, top: 24),
-                        child: ElevatedButton(
-                          onPressed: () {Navigator.push(context, MaterialPageRoute(
-                              builder: (_){
-                                return Login();
-                              })
-                          );
+                        child: OutlinedButton(
+                          onPressed:() {
+                            FirebaseAuth.instance.signOut();
                           },
                           child: Container(
                             padding: const EdgeInsets.only(top: 16, bottom: 16, left: 80, right: 80),
@@ -178,20 +193,15 @@ class _ProfileState extends State<Profile> {
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
                           ),
-
-
-                        ),
-                      ),
+                        )
                     ),
-                    SizedBox(
-                      height:30.0
-                    )
+                  ),
                 ]
-                ),
-              ),
-            ],
-
+            ),
+          ]
       ),
-      );
+    );
   }
+
+
 }

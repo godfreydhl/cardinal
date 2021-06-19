@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'pdf-view.dart';
 import 'preview-video-view.dart';
 import 'issue-model.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class IssueDetail extends StatelessWidget{
 
   IssueDetail({
 
-    this.issue});
+    required this.issue});
 
   final Issue issue;
 
@@ -27,27 +27,48 @@ class IssueDetail extends StatelessWidget{
       ),
       body: ListView(
         children: [
-          Container(
-            height: 200,
-            width: 200,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(issue.thumbnail),
-                fit: BoxFit.fill
-              )
-            ),
-            child: IconButton(
-              icon:Icon(Icons.play_circle_fill_sharp),
-              iconSize: 70,
-              color: Colors.white,
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (_){
-                      return VideoPlayerScreen(issue: issue);
-                    })
+          FutureBuilder<String>(
+            future: firebase_storage.FirebaseStorage.instance
+              .ref()
+              .child(issue.thumbnail)
+              .getDownloadURL(),
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+              if(snapshot.hasData){
+                return Container(
+                  height: 200,
+                  width: 200,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: NetworkImage(snapshot.data.toString()),
+                          fit: BoxFit.fill
+                      )
+                  ),
+                  child: IconButton(
+                    icon:Icon(Icons.play_circle_fill_sharp),
+                    iconSize: 70,
+                    color: Colors.white,
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (_){
+                            return VideoPlayerScreen(issue: issue);
+                          })
+                      );
+                    },
+                  ),
                 );
+
+              }
+              else if(snapshot.hasError){
+                return Icon(Icons.error_outline);
+              }
+              else return Container(
+                  height: 200,
+                  width: 200,
+                child: Center(
+                      child: CircularProgressIndicator(strokeWidth: 0.3,)
+                  ),
+              );
               },
-            ),
           ),
           Container(
             padding: const EdgeInsets.all(20),
@@ -56,15 +77,38 @@ class IssueDetail extends StatelessWidget{
               children: [
                 Card(
                   elevation: 4,
-                  child: Container(
-                    height: 180,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image:AssetImage(issue.image),
-                        fit: BoxFit.fill
-                      ),
-                    ),
+                  child: FutureBuilder<String>(
+                    future: firebase_storage.FirebaseStorage.instance
+                        .ref()
+                        .child(issue.image)
+                        .getDownloadURL(),
+                    builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+                      if(snapshot.hasData){
+                        return Container(
+                          height: 180,
+                          width: 120,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image:NetworkImage(snapshot.data.toString()),
+                                fit: BoxFit.fill
+                            ),
+                          ),
+                        );
+
+                      }
+                      else if(snapshot.hasError){
+                        return Icon(Icons.error_outline);
+                      }
+                      else return Container(
+                            height: 180,
+                            width: 120,
+                            child: Center(
+                                child: CircularProgressIndicator(strokeWidth: 0.3,)
+                            )
+                        );
+
+                    }
+
                   ),
                 ),
                 Expanded(
@@ -106,12 +150,12 @@ class IssueDetail extends StatelessWidget{
                       Container(
                         padding: const EdgeInsets.only(left:16, top: 8),
                         child: ElevatedButton(
-                            onPressed: () {Navigator.push(context, MaterialPageRoute(
+                            onPressed: null,/*() {Navigator.push(context, MaterialPageRoute(
                                 builder: (_){
                                   return PdfView(issue: issue);
                                 })
                               );
-                            },
+                            },*/
                             child: Text(
                               '  BUY NOW  ',
                               style: TextStyle(

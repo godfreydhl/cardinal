@@ -1,7 +1,8 @@
-import 'Article-model.dart';
+/*import 'Article.dart';
 
 final List<Article> TravelArticlesList =<Article> [
   Article(
+      reference: null,
       title: 'Explore Egypt with a magnificent camel ride',
       image: 'assets/images/travel1.jpg',
       content: 'This text is meant for demonstration purposes only.'
@@ -91,3 +92,4 @@ final List<String> RecentArticles = [
   'Explore Egypt with a magnificent camel ride'
 
 ];
+*/

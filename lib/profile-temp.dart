@@ -3,10 +3,10 @@
 class Profile{
 
   Profile( {
-    this.first,
-    this.last,
-    this.email,
-    this.password
+    required this.first,
+    required this.last,
+    required this.email,
+    required this.password
   });
 
   String first;

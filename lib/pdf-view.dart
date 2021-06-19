@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'issue-model.dart';
 import 'package:pdf_flutter/pdf_flutter.dart';
 
@@ -39,4 +39,4 @@ class PdfView extends StatelessWidget{
     );
   }
 
-}
+}*/

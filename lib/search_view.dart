@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cardinal/Article-list-temp.dart';
 import 'article-view.dart';
 class SearchView extends StatefulWidget{
 
@@ -9,6 +10,8 @@ class SearchView extends StatefulWidget{
 }
 
 class _SearchViewState extends State<SearchView> {
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +23,10 @@ class _SearchViewState extends State<SearchView> {
 }
 
 class DataSearch extends SearchDelegate<String> {
+
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [(
@@ -32,6 +39,7 @@ class DataSearch extends SearchDelegate<String> {
     )
     ];
   }
+
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
@@ -40,71 +48,130 @@ class DataSearch extends SearchDelegate<String> {
         progress: transitionAnimation,
 
       ),
-      onPressed: (){
-        close(context, null);
-
+      onPressed: () {
+        close(context, "close");
       },
 
-    );
-
-  }
-  @override
-  Widget buildResults(BuildContext context) {
-    if (!RecentArticles.contains(query)) {
-      RecentArticles.insert(0, query);
-    }
-
-    final results = TravelArticlesList
-        .where((element) => element.title.contains(query))
-        .toList();
-
-    return ListView.builder(itemBuilder: (context, index) =>
-        ListTile(
-          title: Text(results[index].title),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (_) {
-                  return ArticleView(article: results[index]);
-                })
-            );
-          },
-          leading: Icon(Icons.article),
-        ),
-      itemCount: results.length,
     );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestions = TravelArticlesList
-        .map((e) => e.title)
-        .toList()
-        .where((element) => element.contains(query))
-        .toList();
 
-    final suggestionList = query.isEmpty
-        ? RecentArticles
-        : suggestions;
-    return ListView.builder(
-        itemBuilder: (context, index) =>
-            ListTile(
-              onTap: () {
-                query = suggestionList[index];
+    CollectionReference userSearchHistory = FirebaseFirestore.instance.collection('Users')
+        .doc('${userId}').collection('Search_History');
 
-                if (!RecentArticles.contains(query)) {
-                  RecentArticles.insert(0, query);
-                }
+    return StreamBuilder<QuerySnapshot>(
+        stream: query.isEmpty? userSearchHistory.snapshots():
+        FirebaseFirestore.instance.collection('Travel_Articles').snapshots(),
+        builder: (context, snapshot){
+          if(snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if(!snapshot.hasData) {
+            return Center(
+                child : Text(
+                    "No recent searches",
+                    style: TextStyle(
+                        fontSize: 40
+                    )
+                )
+            );
+          }
 
-                showResults(context);
-              },
+          if (snapshot.hasError) {
+            return Center(
+                child: Text('Something went wrong')
+            );
+          }
 
-              leading: query.isEmpty
-                  ? Icon(Icons.history)
-                  : Icon(Icons.search),
-              title: Text(suggestionList[index]
-              ),
-            ),
-        itemCount: suggestionList.length
+          final results = query.isEmpty
+              ? snapshot.data!
+              .docs
+              .map((doc)=>doc['title'])
+              .toList()
+              : snapshot.data!
+              .docs
+              .map((doc)=>doc['title'])
+              .where((doc) =>doc.contains(query))
+              .toList();
+
+          return ListView.builder(
+            itemCount:results.length,
+            itemBuilder:(context, index) =>
+                ListTile(
+                  onTap: (){
+                    query = results[index];
+
+                    userSearchHistory
+                        .where('title', isEqualTo: query)
+                        .get()
+                        .then((QuerySnapshot snapshot){
+                      if(snapshot.docs.isEmpty){
+                        userSearchHistory
+                            .doc('${query}')
+                            .set({
+                          'title':'${query}'
+                        }).then((value)=> {
+
+                        }).catchError((error) => print("Failed to add search item: $error"));
+                      }});
+
+                    showResults(context);
+                    },
+                  leading: query.isEmpty
+                      ? Icon(Icons.history)
+                      : Icon(Icons.search) ,
+                  title: Text(results[index]),
+                ),
+
+          );
+    }
+    );
+  }
+
+  Widget buildResults(BuildContext context) {
+
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('Travel_Articles').snapshots(),
+        builder: (context, snapshot){
+          if(snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasError) {
+            return Center(
+                child: Text('Something went wrong')
+            );
+          }
+
+
+          final results =  snapshot.data!
+              .docs
+              .map((doc)=>doc['title'])
+              .where((doc) =>doc.contains(query))
+              .toList();
+
+          return ListView.builder(
+            itemCount:results.length,
+            itemBuilder:(context, index) =>
+                ListTile(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (_) {
+                          return ArticleView(article: results[index]);
+                        })
+                    );
+                  },
+                  leading:Icon(Icons.article) ,
+                  title: Text(results[index]),
+                ),
+
+          );
+        }
     );
   }
 }
