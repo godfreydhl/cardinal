@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'preview-video-view.dart';
 import 'issue-model.dart';
+import 'package:provider/provider.dart';
+import 'issue_download_button.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class IssueDetail extends StatelessWidget{
@@ -149,26 +151,14 @@ class IssueDetail extends StatelessWidget{
 
                       Container(
                         padding: const EdgeInsets.only(left:16, top: 8),
-                        child: ElevatedButton(
-                            onPressed: null,/*() {Navigator.push(context, MaterialPageRoute(
-                                builder: (_){
-                                  return PdfView(issue: issue);
-                                })
-                              );
-                            },*/
-                            child: Text(
-                              '  BUY NOW  ',
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white
-                              ),
-                            ),
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                            ),
-
-                        ),
+                        child: Consumer<ButtonState>(
+                          builder: (context, appState,_)=>BuildButton(
+                              issue: issue,
+                              downloadState: appState.downloadState,
+                              downloadButton: appState.downloadButton,
+                              startDownload: appState.startDownload,
+                              openButton: appState.openButton),
+                        )
                       )
                     ],
                   ),

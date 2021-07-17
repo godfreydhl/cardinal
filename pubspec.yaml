@@ -28,6 +28,7 @@ dependencies:
   firebase_storage: ^8.0.1
   firebase_auth: ^1.0.1
   provider: ^5.0.0
+  path_provider: ^2.0.2
 
 
   flutter:

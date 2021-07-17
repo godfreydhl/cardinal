@@ -4,15 +4,22 @@ import 'package:firebase_core/firebase_core.dart';
 import 'authentication.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'issue_download_button.dart';
 
 
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(ChangeNotifierProvider(
-    create: (context) => ApplicationState(),
-    builder: (context, _)=>MyApp(),
-  ),
+  runApp(
+    MultiProvider(
+      providers:[
+        ChangeNotifierProvider(create: (context) => ApplicationState()),
+        ChangeNotifierProvider(create: (context) => ButtonState()),
+
+      ],
+      builder: (context, _)=>MyApp(),
+    ),
+
   );
 }
 
